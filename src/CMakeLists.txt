@@ -15,11 +15,14 @@ FILE(GLOB SRCS pavlov/*.c *.c)
 FILE(GLOB HDRS *.h pavlov/*.h easylzma/*.h)
 FILE(GLOB PUB_HDRS easylzma/*.h)
 
+message("LDN:     ${LIBDISTNAME}")
+message("src:     ${CMAKE_SOURCE_DIR}")
+message("binary:  ${CMAKE_BINARY_DIR}")
+message("current: ${CMAKE_CURRENT_BINARY_DIR}")
+
 # set up some paths for outputing the usable binaries
-SET (libDir
-     ${CMAKE_CURRENT_BINARY_DIR}/../${EASYLZMA_DIST_NAME}/lib)
-SET (incDir
-     ${CMAKE_CURRENT_BINARY_DIR}/../${EASYLZMA_DIST_NAME}/include/easylzma)
+SET (libDir ${CMAKE_BINARY_DIR}/${LIBDISTNAME}/lib)
+SET (incDir ${CMAKE_BINARY_DIR}/${LIBDISTNAME}/include/easylzma)
 
 # an include directory to allow easylzma implementation to find public
 # headers
@@ -37,6 +40,11 @@ SET_TARGET_PROPERTIES(
     SOVERSION ${EASYLZMA_MAJOR}
     VERSION ${EASYLZMA_MAJOR}.${EASYLZMA_MINOR}.${EASYLZMA_MICRO})
 
+set_target_properties(
+    easylzma_s PROPERTIES
+    OUTPUT_ANME "easylzma"
+)
+
 # on win32 we'll need to setup exports correctly
 SET(sharedLibCompileFlags "-DEASYLZMA_SHARED -DEASYLZMA_BUILD")
 IF (APPLE)
@@ -53,7 +61,7 @@ FILE(MAKE_DIRECTORY ${incDir})
 ### copy the two required headers into our output dir as a post build step
 # copy public headers to output directory
 FOREACH (header ${PUB_HDRS})
-  # preserve relative pathing		
+  # preserve relative pathing
   ADD_CUSTOM_COMMAND(TARGET easylzma_s POST_BUILD
       COMMAND ${CMAKE_COMMAND} -E copy_if_different ${header} ${incDir})
 ENDFOREACH (header ${PUB_HDRS})
