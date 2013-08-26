@@ -42,7 +42,7 @@ SET_TARGET_PROPERTIES(
 
 set_target_properties(
     easylzma_s PROPERTIES
-    OUTPUT_ANME "easylzma"
+    OUTPUT_NAME "easylzma"
 )
 
 # on win32 we'll need to setup exports correctly
